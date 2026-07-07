@@ -1,0 +1,7 @@
+executable = $(filename)
+arguments = /tmp/x509up_u196241 $(filename) $(ClusterID) $(ProcId)
+output = $Fp(filename)hlt.stdout
+error = $Fp(filename)hlt.stderr
+log = $Fp(filename)hlt.log
++JobFlavour = "espresso"
+queue filename matching (/afs/cern.ch/user/m/mspannri/CMSSW_16_0_8/big_run/Jobs/HLT_job_*/*.sh)

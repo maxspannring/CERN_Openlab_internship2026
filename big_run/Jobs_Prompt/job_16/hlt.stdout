@@ -1,0 +1,23 @@
+/pool/condor/dir_636608/tmp/Job_16
+#--------------------------------------------------------------------------
+#                         FastJet release 3.4.1
+#                 M. Cacciari, G.P. Salam and G. Soyez                  
+#     A software package for jet finding and analysis at colliders      
+#                           http://fastjet.fr                           
+#	                                                                      
+# Please cite EPJC72(2012)1896 [arXiv:1111.6097] if you use this package
+# for scientific work and optionally PLB641(2006)57 [hep-ph/0512210].   
+#                                                                       
+# FastJet is provided without warranty under the GNU GPL v2 or higher.  
+# It uses T. Chan's closest pair algorithm, S. Fortune's Voronoi code
+# and 3rd party plugin jet algorithms. See COPYING file for details.
+#--------------------------------------------------------------------------
+--- files in workdir after cmsRun ---
+total 41448
+drwxr-xr-x. 2 mspannri zh       93 Jul  7 09:50 .
+drwx------. 3 mspannri zh       20 Jul  7 09:49 ..
+-rw-r--r--. 1 mspannri zh  3473951 Jul  7 10:19 DQMIO.root
+-rw-r--r--. 1 mspannri zh      199 Jul  7 09:49 hlt.log
+-rw-r--r--. 1 mspannri zh 34067920 Jul  7 10:19 output.root
+-rw-r--r--. 1 mspannri zh  4883193 Jul  7 09:49 run_cfg.py
+-rwxr-xr-x. 1 mspannri zh      419 Jul  7 09:49 sub_16.sh
