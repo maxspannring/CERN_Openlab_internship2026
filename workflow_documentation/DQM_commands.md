@@ -24,3 +24,4 @@ cmsRun DQM/Integration/python/clients/hlt_dqm_sourceclient-live_cfg.py inputFile
 ```
 this runs quite a while so maybe run it in tmux :)
 once this is done, you can find the results in the upload folder. 
+Also set the bin size to 100 instead of 50!
