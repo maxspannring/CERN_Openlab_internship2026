@@ -1,0 +1,296 @@
+# CMS OMS API python client
+
+This client is a recommended way to access CMS OMS data from your scripts.
+
+## Install
+
+For most users `pip install omsapi` will suffice. Below are more detailed instructions for other use cases.
+
+
+# Install from source
+
+```
+git clone ssh://git@gitlab.cern.ch:7999/cmsoms/oms-api-client.git
+cd oms-api-client
+
+## Optionally venv can be used in case native python environment does not have all build dependencies:
+python3 -m venv venv
+
+#or (specific version EL8):
+python3.8 -m venv venv
+
+#or (specific version ALMA9/EL9):
+python3.12 -m venv venv
+
+source venv/bin/activate
+
+python3 -m pip install -r requirements.txt
+
+#local user installation, if necessary to use locally:
+python3 setup.py install --user
+```
+
+## Update from source
+```
+cd oms-api-client
+git pull
+
+#for local user installation:
+python3 setup.py install --user
+```
+
+## RPM dependencies (any OS):
+Currently tsgauth is not pulled in by the RPM and has to be installed separately if OpenID auth needs to be used:
+```
+pip install tsgauth
+```
+
+## Build RPM (CC8(RHEL8)/python 3.8):
+```
+python3.8 setup.py bdist_rpm --python /usr/bin/python3.8 --build-requires python38,python38-setuptools --release 0.el8
+```
+
+## Build RPM (ALMA9/python 3.9):
+```
+#python3.9 is default
+python3 setup.py bdist_rpm --python /usr/bin/python3 --build-requires python3,python3-setuptools --release 0.el9
+```
+
+## Build RPM (ALMA9/python 3.12):
+```
+python3.12 setup.py bdist_rpm --python /usr/bin/python3.12 --build-requires python3.12,python3.12-setuptools --release 0.el9
+```
+
+Note: kojitag.sh script is used by gitlab CI only
+
+## Install with pip/pypi (supports multiple python versions). Now published in central pypi repository:
+Note: tsgauth package is pip dependency defined for the wheel file.
+```
+pip install omsapi
+```
+
+## Install with pip/pypi (supports multiple python versions) - OBSOLETE! (using CERN gitlab repository):
+Note: tsgauth package is pip dependency defined for the wheel file.
+```
+pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
+```
+
+## Requirements
+
+auth_oidc() requires registered CERN OpenID application. It can be created
+by any user on the Application Portal: https://application-portal.web.cern.ch/
+When doing the step of SSO Registration, select option allowing application to
+request tokens itself. Copy client id and client secret and use them as parameters
+of auth_oidc().
+
+You will need to request rights for access. Please send a mail to cmsoms-operations@cern.ch or cmsoms-developers@cern.ch with your application identifier, so that OMS maintainers can add your application to oms-api-access group (group exists in Malt/Grappa infrastructure only, not as an e-group). This group is used to controll access for access for all OMS instances (see below).
+
+It is also recommended to add yourself to the cmsoms-api-users in CERN e-groups:
+  https://e-groups.cern.ch/e-groups/EgroupsSearchForm.do
+
+Important news and announcements will be sent to this mailing list e-group 
+
+See also:
+https://gitlab.cern.ch/cmsoms/oms-api-client/-/wikis/OpenID-API-instructions
+
+Note: audience parameter defaults to application ID 'cmsoms-prod'. Corresponding IDs for OMS instances are:
+```
+cmsoms-int-0184 - for Development access (https://vocms0184.cern.ch)
+cmsoms-int-0185 - for Integration access (https://vocms0185.cern.ch)
+cmsoms-prod - for Production access (https://cmsoms.cern.ch)
+```
+
+# Examples
+
+### Fetch all eras
+```
+from omsapi import OMSAPI
+
+#fill your values
+my_app_id='omsapi_test_id'
+my_app_secret='2398938-30389039-33'
+
+omsapi = OMSAPI("https://cmsoms.cern.ch/agg/api", "v1", cert_verify=False)
+omsapi.auth_oidc(my_app_id,my_app_secret)
+
+# Create a query.
+q = omsapi.query("eras")
+
+# Execute query & fetch data
+response = q.data()
+
+# Display JSON data
+print(response.json())
+```
+
+### Fetch Last Run
+```
+from omsapi import OMSAPI
+
+omsapi = OMSAPI("https://cmsoms.cern.ch/agg/api", "v1", cert_verify=False)
+omsapi.auth_oidc(my_app_id,my_app_secret)
+
+# Create a query
+q = omsapi.query("runs")
+
+# Chain filters
+q.paginate(page=1, per_page=1).sort("run_number", asc=False)
+
+# Execute query & fetch data
+response = q.data()
+
+# Display JSON data
+print(response.json())
+```
+
+[More examples](examples/)
+
+# Client API
+
+## OMSAPI Class
+
+### Create API client
+constructor OMSAPI(*url*, *version="v1"*, cert_verify=True|False, retry_on_err_sec=0) - set API endpoint and version (recommended to keep default values, retry delay optional)
+
+Example:
+```
+from omsapi import OMSAPI
+
+omsapi = OMSAPI("https://cmsoms.cern.ch/agg/api", "v1")
+```
+
+### Create query
+omsapi.query(*resource_name*) - set resource name (runs/fills/lumisections/...)
+
+Returns query object
+
+Example:
+```
+q = omsapi.query("eras")
+```
+
+## OMSAPIQuery class
+
+### Projection
+.attrs(*[attribute_names]*) - set only those attribute names you need in response
+
+Example:
+```
+q.attrs(["delivered_luminosity", "fill_number"])
+```
+
+### Filtering
+.filter(*attribute_name*, *value*, *operator="EQ"*) - filters attribute againts value using operator
+
+Supported operators: ["EQ", "NEQ", "LT", "GT", "LE", "GE", "LIKE"]
+
+Examples:
+```
+q.filter("nun_number", 320149)
+```
+or
+```
+q.filter("fill_number", 5000, "GT").filter("fill_number", 5500, "LT")
+```
+
+.filters(*filters*) - apply multiple filters at once. Same as calling .filter() multiple times
+
+Examples:
+
+see `examples/09-multiple-filters.py`
+
+### Sorting
+.sort(*attribute_name*, *asc=True*) - set attribute name and direction
+
+Example:
+```
+q.sort("run_number").sort("lumisection_number", asc=False)
+```
+Note: order matters!
+
+### Pagination
+.paginate(*page=1*, *per_page=10*) - set page number and page size
+
+Example:
+```
+q.paginate(2, per_page=10)
+```
+
+### Include
+.include(*flag*) - include special flags to a query
+
+Supported flags: ["meta", "presentation_timestamp"]
+
+meta - includes meta information about resource into response object
+
+presentation_timestamp - changes representation of datetime attribtutes
+
+Example:
+```
+q.include("meta")
+```
+
+### Custom Query parameters
+.custom(*parameter_name*, *parameter_value*) - set custom parameter key:value pair
+
+Example:
+```
+q.custom("group[size]", 100)
+```
+
+### Set verbose
+.set_verbose(True/False) - print debug information or not
+
+Example:
+```
+q.set_verbose(False)
+```
+
+### Set query attribute validation
+.set_validation(True/False) - check or not for typos in filters/projection/sorting
+
+Example:
+```
+.set_validation(False)
+```
+
+### Query is ready. Execute it!
+.data() - execute query and fetch data.
+
+Returns requests.Response object
+
+Example:
+```
+resp = q.data()
+
+print(resp.json())
+```
+
+### Interested how query (URL) looks like?
+.data_query() - Contruct URL to be used to query data from API
+
+Returns String
+
+Example:
+```
+url = q.data_query()
+
+print(url)
+```
+
+## Alternative Auth option
+
+Instead of auth with OpenID you can use Kerberos authentication. Run auth_krb() function.
+It will prompt for the 2FA code in case you have CERN OpenID two-factor authentication enabled.
+see example [07-sso-krb.py](examples/07-sso-krb.py)
+
+
+## Portal-API diff tool
+
+Can be used to compare pages and other components in two instances of portal-api DB.
+For example:
+```
+kinit YOURUSER@CERN.CH
+./tools/portal_api_diff.py vocms0184.cern.ch vocms0185.cern.ch /cms/triggers/hlt_trigger_rates
+```
+

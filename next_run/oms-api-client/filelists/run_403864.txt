@@ -1,0 +1,2 @@
+/store/data/Run2026D/EGamma2/RAW-RECO/ZElectron-PromptReco-v1/000/403/864/00000/15c78e52-29e7-4b8f-b85f-2956f1d0e11b.root
+/store/data/Run2026D/EGamma4/RAW-RECO/ZElectron-PromptReco-v1/000/403/864/00000/19dcfa6b-5147-41ad-aea7-b729985f3c08.root

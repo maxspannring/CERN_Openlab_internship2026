@@ -1,0 +1,13 @@
+*.pyc
+.idea
+.idea/*
+.vscode
+.project
+.pydevproject
+.DS_Store
+build
+dist
+omsapi.egg-info
+ssocookies.txt
+venv
+python*

@@ -1,0 +1,6 @@
+/store/data/Run2026C/EGamma0/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/fe48a524-4586-42ff-9b2d-b294a337d242.root
+/store/data/Run2026C/EGamma1/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/4074c7a9-6c68-46a9-a3fb-28e076dd0d23.root
+/store/data/Run2026C/EGamma2/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/b861b320-c5f5-4c75-b474-1ed1c147da5e.root
+/store/data/Run2026C/EGamma3/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/e7c57da0-26b6-4085-b1e2-b2e53400ec90.root
+/store/data/Run2026C/EGamma4/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/e0c27d95-61b6-453f-8972-e2c1b425cfe2.root
+/store/data/Run2026C/EGamma5/RAW-RECO/ZElectron-PromptReco-v1/000/402/649/00000/9a389195-b369-4671-8c23-d3ac951b4845.root

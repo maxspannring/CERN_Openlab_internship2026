@@ -1,0 +1,8 @@
+[distutils]
+index-servers =
+    gitlab
+
+[gitlab]
+repository = https://gitlab.cern.ch/api/v4/projects/CI_PROJECT_ID/packages/pypi
+username = CI_DEPLOY_TOKEN_USERNAME
+password = CI_DEPLOY_TOKEN_PWD
